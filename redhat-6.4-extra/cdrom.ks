@@ -6,19 +6,20 @@ key --skip
 lang en_US.UTF-8
 keyboard us
 text
+DISK=`list-harddrives | cut -d' ' -f1 | grep -q vda && echo vda || echo sda`
 # crowbar
 rootpw --iscrypted $1$H6F/NLec$Fps2Ut0zY4MjJtsa1O2yk0
 firewall --disabled
 authconfig --enableshadow --enablemd5
 selinux --disabled
 timezone --utc UTC
-bootloader --location=mbr --driveorder=sda
+bootloader --location=mbr --driveorder=${DISK}
 zerombr
-ignoredisk --only-use=sda
-clearpart --all --drives=sda
-part /boot --fstype ext4 --size=100 --ondisk=sda
+ignoredisk --only-use=${DISK}
+clearpart --all --drives=${DISK}
+part /boot --fstype ext4 --size=100 --ondisk=${DISK}
 part swap --recommended
-part pv.6 --size=1 --grow --ondisk=sda
+part pv.6 --size=1 --grow --ondisk=${DISK}
 volgroup lv_admin --pesize=32768 pv.6
 logvol / --fstype ext4 --name=lv_root --vgname=lv_admin --size=1 --grow
 reboot
